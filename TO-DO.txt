@@ -1,0 +1,243 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    TO-DO.txt                                          :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: idsy <idsy@student.42.fr>                  +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2019/10/30 08:13:09 by idsy              #+#    #+#              #
+#    Updated: 2019/11/06 18:48:43 by idsy             ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+Ce fichier est le fichier qui me permet de mettre de l'ordre dans mon'
+esprit quand je code et permet la comprehension du projet plus facilement
+Check les rubriques, elle sont cools. surtout celle qui explique l'opti'
+
+-------------------------------------------------------------------------
+		GOALS
+-------------------------------------------------------------------------
+
+Parseur: tetriminos.
+	- un seul fichier en entree
+	- les  tetriminos sont sur 4 lignes de 4 chars + 1 \noreturn
+	- return l"usage" et quitter de maniere propre si parseur non respecte
+	- chaque caracteree est soit un # soit un .
+	- pas plus de 4 #
+	- forme de tetris respectee, contact entre tetriminos
+	- jamais plus de 26 tetriminos.
+
+Stockage: tetriminos
+	- stocker le nom de la piece
+	- stocker sa position de maniere a ce qu'elle soit exploitable'
+	- il y a un total de 19 positions possible de tetriminos sachant
+		 qu'ils ne sont aucun cas tournable'.
+	
+	
+
+Backtracking.
+	- stocker les tetriminos sous int et les agencer dans la grille en fonction
+	-
+
+A faire pendant la prochaine session:
+	//-Open_ang get file
+	- parse file
+	//- cut pieces**
+	//-find out minimal grid size
+	//-fillit.h
+	- Norminette
+
+DECALAGE BINAIRE
+	//- On cherche a obtenir la "forme absolue" de la piece, soit sa forme deplacee
+	//	vers en haut a gauche au maximum
+	//- Chopper le premier # de la colonne et deplacer vers la gauche en fonction
+	//- decaler encore si les lignes sont vides up-top;
+
+
+	Bonus points:
+	- Makefile
+	- Backtracking
+
+-------------------------------------------------------------------------
+	Fonctionnement
+-------------------------------------------------------------------------
+
+On possede une grille et on essaie de placer les tetriminos dans totes les
+cpmbinations possible jusqua ce que ca rentre. Si toutes positions ont etes
+faites et qu'aucune n'est valide on augmente la taille de la grille pour
+ressayer jusqua ce que ca marche
+
+
+idee 1: stocker les tetriminos en 1 it en fonction de leur forme et faire
+ldes fonctions de placements qui les mettrai  
+
+COUPER LES PIECES:
+
+pour couper les pieces:
+- Commencer par les extrraire du fichier en et les regrouper par 16 bits
+- Stocker les serie de 16 dans un tableau de str;
+- check la str, si la ligne est vide, on rappelle ;
+
+GRILLE EN INT ?
+
+- comparaison entre bits = plus rapide que comparaison entre chars
+	- comparer la forme absolue de la piece avec une grille faite en int
+	- et stocker dans la piece son placement final pour son affichage plus tard
+		(genre fouttre une condition au niveau du backtracking qui dit
+		 que tu stocke si la prochaine piece a reeussi a se placer)
+
+
+		
+TETRIMINOS_PARSING:
+
+-Check le format des tetriminos
+	- 4 char par ligne
+	- 4 lignes par tetri
+	- 4 hash par tetri
+	- les char ne sont pas autres que # et . ou '\n'
+
+-Check la forme des tetriminos
+	- si un hash est present et qu''il y en avait un avant, ils sont relies
+
+-Check la separation inter-tetriminos
+	- Si il y a deux tetriminos, ils sont separes par un '\n.'
+	- Si un '\n' est present mais qu'il n'ya a pas de tetri -> error
+
+-Check le nombre total de tetriminos
+	- pas plus de 26 tetriminos or die.
+
+-------------------------------------------------------------------------
+		BUGS
+-------------------------------------------------------------------------
+
+ligne = 2;
+T = 4;
+L = 4;
+L inverse = 4;
+carre = 1;
+escaliers = 4;
+
+-----------------------------------------------------------------------------------
+		COMMENT C'EST OPTI' ?
+-----------------------------------------------------------------------------------
+
+Pour des questions d'optimisation' en terme de memoire demandee, Nous allons tester les placements des differentes pieces
+avec des bits, sachant que des comparaison inter-bits sont plus rapides qu'entre chars'
+Et nous ne stockeront que la position finale de lapiece dans la "forme simplifiee"
+
+Un long fait 32 bits soit 4 octet, comme un char:
+0000 0000  0000 0000	0000 0000  0000 0000
+
+parmis ces 32, 16 bits sont utilises pour "la forme absolue" de la piece
+(meme si en realite une la forme absolue qui utilise le plus de bits
+la barre verticale est stockable sur 13 bits) soit:
+								13
+0000 0000  0000 0000	[1000 1000  1000 1]000
+						(format de ligne verticale)
+
+Ensuite, il faut prendre en compte le fait que la piece ai une identite qui doit etre
+transmise lors de l'affichage'. En effet La piece peut correspondre a l'une des 
+26 lettres' de l'alphabet.' Cette identite peut etre sauvegardee sur 6 autres bits.
+ sachant que ces 5 bits peuvent interpretes 32 identites au total.
+
+admettons dont que la position de la 26eme piece soit cette fameuse ligne verticale
+on obtiendrai les bits suivant:
+				= 26
+0000 0000  000[1 1010]		1000 1000 1000 1000
+
+Il ne reste plus qu'une chose' a stocker, c'est la position finale' de la piece.
+En effet, si on compare un grille qui represente des pieces avec des bits, il,
+n'est pas possible' de stocker L'indentite avec' Ni de retranscrire accurately
+L'agencement' du schmilblique. Et plutot que de stocker l'identite dans la grille
+Ce qui nous forcerai' affecter plus qu'un seul bit a l'identification de la disponibilte
+D''une case. On peut simplement associer l''une des position de la grille
+
+En ayant 1 octet + 3 bits, on peut stocker un total de 2048 positions ce qui est
+largement superieur au nombre de position que pourrait contenir une grille hypothetique de
+de 45 par 45 (beaucoup plus que ce qui est necessaire)
+
+------------------------------------------------------------------------------
+PROBLEME
+------------------------------------------------------------------------------
+Comment mettre en oeuvre une suite de bits:
+mettre en place une suite de long (32 bits), genre un array de 32 long
+
+avantage par rapport a grille de string? Moins de data et acces plus facile.
+
+COMETN METTRE UNE CONDITION de stockage d'information de lapiece'?
+	- on aimerai que ce soit au dernier placement que toutes les sauvegardes se 
+	  fasse
+
+pendant le backtracking, on place une piece et on sauvegarde sa position si
+le return de la prochaine piece est good aussi, sinon on la retire et on la bouge
+avant de recommencer. (le placement de la prochaine est good que si celui
+ de la derniere piece est good)
+- fonction de placement
+- fonction de retirage
+- backtracking
+
+est-ce que la grille vaut la peine d'etre' retournee en long?
+
+1000 1000  1000 1000 piece
+
+1110 0]111 	1111 1111	1111 1111  1111 1111
+1000 0]111 	1111 1111	1111 1111  1111 1111
+0000 0]111 	1111 1111	1111 1111  1111 1111
+0000 0]111 	1111 1111	1111 1111  1111 1111
+0000 0]111 	1111 1111	1111 1111  1111 1111
+1111 1111 	1111 1111	1111 1111  1111 1111
+------- grid size = 5
+
+tentative de position en 3:
+sifting de la la ligne de grille de 32 - position - 4
+1110 0]111 	1111 1111	1111 1111  1111 1111
+		goes to
+0000 0000  0000 0000 	0000 0000  0[111 00]00
+and tetri goes to:
+1000
+
+Probleme: comment eviter que le placement hors de la grille soit accepte?
+
+condition de return (-1); si le placement reeussi, on check si la comparaison
+entre la ligne de grille et le bit le plus haut apres le grid size sont montre
+qu'un bit est actif en dessous'
+ 
+si c'est le ca, la verification est invalide.'
+
+-----------------------------------------------------------------
+Lundi 4 novembre: TO_DO
+-----------------------------------------------------------------
+// Corrected grid generator and resizer
+// Check_grid_space
+// Optimisation : Get the line + line_pos identifier en dehors du check pour
+//	eviter les modulo et division en boucle.
+//-insert_piece
+//remove_piece
+//Backtracking
+//-print_grid
+	//-init
+	//-place in
+	//-display
+
+Question opti: devrais-je garder le statut de la grille avant placage du tetri pour pouvoir revert
+plus facilement?
+
+Actuellement le systeme est base sur des operations d'addind et de remove sur' 
+la grille, alor qu''on pourrait garder en stack la grille et pouvoir la passer directement en argument
+dans la prochaine appel de fonction  de backtracking. ce qui nous fait garder en memoire
+un maximum de 25 etats de grille avant qu'elles ne meurent toutes'
+
+Cette solution nous fait copier et creer 25
+
+OPTMISATION. comparaison du check_grid space. Soit je cree un nouveau morceau de stack
+
+----------------------------------------------------------------------
+Mercredi 6 Novembre: TO_DO
+----------------------------------------------------------------------
+//-Make it compilable  
+-Makefile
+-Norme
+-Debug
+-Testing
+-Find a mate
+-error messages and everything?

@@ -6,57 +6,44 @@
 /*   By: idsy <idsy@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/25 15:02:21 by idsy              #+#    #+#             */
-/*   Updated: 2019/09/30 10:04:35 by idsy             ###   ########.fr       */
+/*   Updated: 2019/11/18 14:19:25 by idsy             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+#include "fillit.h"
 
 /*
 **	chopper les pieces par parsing, le stockers en informations minimales
 **	si seulement 1 piece, commencer par une grille capable d'accepter
-**	tous les points, soit nb_pieces * 4 < grid_size * grid_size;
-**
+**	tous les points, soit nb_pieces * 4 < gd_size * gd_size;
 */
 
-void			print_grid(int **grid, int size)
-{}
-
-static	int		find_out_minimal_grid_size(char **pieces)
+int		fill_it_backtracking(long *grid, short gd_size,
+								short position, long *pieces)
 {
-	int		grid_size;
-	int		pieces_count;
+	short	line;
+	short	line_pos;
 
-	grid_size = 2;
-	pieces_count = 0;
-	while (*pieces[pieces_count])
-		pieces_count++;
-	while (pieces_count * 4 > grid_size * grid_size)
-		grid_size++;
-	return (grid_size);
-}
-
-static	char	**generate_grid()
-{
-	char	**grid;
-	return (grid);
-}
-
-int				fill_it_backtracking(char **grid, int grid_size, char **pieces, int position)
-{}
-
-int				main(int argc, char **argv)
-{
-	char	**pieces;
-	int		grid_size;
-	char	**grid;
-
-	if (!(pieces = parsing_of_the_file(argc,argv)))
-		return (-1);
-	grid_size = find_out_minimal_grid_size(pieces);
-	grid = generate_grid(grid,grid_size);
-	while (!(fill_it_backtracking(grid,grid_size,pieces,0)))
-		grid = generate_grid(grid,++grid_size);
-	print_grid(grid,grid_size);
+	if (*pieces == 0)
+		return (0);
+	if (position == gd_size * gd_size)
+		return (1);
+	line = position / gd_size;
+	line_pos = position % gd_size;
+	if ((check_grid_space(grid, *pieces, line, line_pos)) == 1)
+	{
+		return (fill_it_backtracking(grid, gd_size, position + 1, pieces));
+	}
+	else
+	{
+		insert_piece(&grid, (long)*pieces, line, line_pos);
+		if (fill_it_backtracking(grid, gd_size, 0, pieces + 1) == 1)
+		{
+			remove_piece(&grid, (long)*pieces, line, line_pos);
+			return (fill_it_backtracking(grid, gd_size, position + 1, pieces));
+		}
+		else
+			save_piece_pos(pieces, position);
+	}
 	return (0);
 }

@@ -6,37 +6,18 @@
 /*   By: idsy <idsy@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/25 14:48:32 by idsy              #+#    #+#             */
-/*   Updated: 2019/10/11 16:26:08 by idsy             ###   ########.fr       */
+/*   Updated: 2019/11/18 13:50:31 by idsy             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fillit.h"
 
-/*
-** basically opening the file and getting a string out of it while being
-** secure and check for any possible error be it in a system call or in
-** entry values of the program
-*/
-
-static	char	*open_and_get_file(int argc, char **argv)
+short			piece_counter(char *file_string)
 {
-	int		fd;
-	char	*file_string;
-	int		ret;
-	char	*buff[BUFF_SIZE + 1];
+	short	file_string_len;
 
-	if (argc > 2)
-		//error + message
-	if ((fd = open(argv[1], O_RDONLY)) == -1)
-		//error + message
-	if ((ret = read(fd, buff, BUFF_SIZE) > 545))
-		//error + message
-	buff[ret] = '\0';
-	if ((close(fd)) == -1)
-		//error + message
-	if (!(file_string = ft_strdup(buff)))
-		//error + message
-	return (file_string);
+	file_string_len = ft_strlen(file_string);
+	return ((file_string_len / 21) + 1);
 }
 
 /*
@@ -47,7 +28,6 @@ static	char	*open_and_get_file(int argc, char **argv)
 static	char	**cut_down_pieces(char *file_string, int piece_count)
 {
 	char	**pieces;
-	char	*cut_piece;
 	int		foo;
 
 	if (!(pieces = (char **)malloc(sizeof(char *) * (piece_count + 1))))
@@ -55,11 +35,12 @@ static	char	**cut_down_pieces(char *file_string, int piece_count)
 	foo = 0;
 	while (*file_string && (*file_string != '\n'))
 	{
-		if (!(pieces[foo] = (char *)malloc(sizeof(char) * 16 + 1)))
+		if (!(pieces[foo] = (char *)malloc(sizeof(char) * 20 + 1)))
 			return (NULL);
-		pieces[foo] = ft_strdup_until(file_string, '\n');
-		pieces[foo][16] = '\n';
-		file_string += 17;
+		pieces[foo] = ft_strncpy(pieces[foo], file_string, 20);
+		pieces[foo][20] = '\0';
+		foo++;
+		file_string += 21;
 	}
 	return (pieces);
 }
@@ -75,10 +56,10 @@ static	char	**cut_down_pieces(char *file_string, int piece_count)
 static	long	find_absolute_placement(long piece_bits)
 {
 	while (piece_bits < 0x1000)
-		piece_bits << 4;
-	while (!(piece_bits & 0x8000) || !(piece_bits & 0x800)
-		|| !(piece_bits & 0x80))
-		piece_bits << 1;
+		piece_bits <<= 4;
+	while (!(piece_bits & 0x8000) && !(piece_bits & 0x800)
+		&& !(piece_bits & 0x80))
+		piece_bits <<= 1;
 	return (piece_bits);
 }
 
@@ -97,11 +78,10 @@ static	long	simplify_piece(char *piece, int name)
 	piece_bits = 0;
 	while (*piece)
 	{
-		if (*piece == "#")
+		if (*piece++ == '#')
 			piece_bits += 1;
-		piece++;
-		if (*piece)
-			piece_bits << 1;
+		if (*piece && *piece != '\n')
+			piece_bits <<= 1;
 	}
 	piece_bits = find_absolute_placement(piece_bits);
 	piece_bits += (name << 16);
@@ -114,26 +94,31 @@ static	long	simplify_piece(char *piece, int name)
 **
 ** Basically, it;s the main function of parsing that calls all the other sub-ft
 ** opening, reading and checking the entry file and cutting it down to pieces
-** (pun intended) 
+** (pun intended)
 ** returning a table of long ints containing the simplified version
 ** of all the pieces.
 */
 
-int				*parsing_of_the_file(int argc, char **argv)
+long			*parsing_of_the_file(int argc, char **argv)
 {
 	char	*file_string;
 	char	**pieces;
 	long	*simplified_pieces;
-	int		foo;
+	short	foo;
+	short	piece_count;
 
-	file_string = open_and_get_file(argc, argv);
-	if (!(check_file_string(file_string)))
-		return (-1);
-	pieces = cut_down_pieces(file_string);
-	foo = 0;
-	while (pieces[foo])
-		simplified_pieces[foo] = simplify_piece(pieces[foo], foo++);
+	if (!(file_string = open_and_get_file(argc, argv))
+		|| check_file_string(file_string))
+		return (NULL);
+	piece_count = piece_counter(file_string);
+	if (!(pieces = cut_down_pieces(file_string, piece_count)))
+		return (NULL);
+	simplified_pieces = (long *)malloc(sizeof(long) * piece_count + 1);
+	foo = -1;
+	while (++foo < piece_count)
+		simplified_pieces[foo] = simplify_piece(pieces[foo], foo);
+	simplified_pieces[foo] = 0;
 	free(file_string);
-	ft_deltab(pieces);
+	ft_deltab(&pieces);
 	return (simplified_pieces);
 }
