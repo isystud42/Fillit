@@ -6,7 +6,7 @@
 /*   By: idsy <idsy@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/04 12:22:48 by idsy              #+#    #+#             */
-/*   Updated: 2019/11/18 13:58:43 by idsy             ###   ########.fr       */
+/*   Updated: 2019/11/19 20:22:12 by idsy             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,7 @@ static	char	**initialise_displayed_grid(short grid_size)
 		ft_memset((void *)displayed_grid[foo], '.', grid_size);
 		displayed_grid[foo++][grid_size] = '\0';
 	}
-	if (!(displayed_grid[foo] = malloc(sizeof(char))))
-		return (NULL);
-	displayed_grid[foo][0] = '\0';
+	displayed_grid[foo] = NULL;
 	return (displayed_grid);
 }
 

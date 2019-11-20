@@ -6,7 +6,7 @@
 /*   By: idsy <idsy@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/25 14:48:32 by idsy              #+#    #+#             */
-/*   Updated: 2019/11/18 13:50:31 by idsy             ###   ########.fr       */
+/*   Updated: 2019/11/20 14:24:36 by idsy             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,31 +18,6 @@ short			piece_counter(char *file_string)
 
 	file_string_len = ft_strlen(file_string);
 	return ((file_string_len / 21) + 1);
-}
-
-/*
-** cut down pieces takes the file string (info from the file) and cuts it down,
-** to a table a strings, holding each pieces.
-*/
-
-static	char	**cut_down_pieces(char *file_string, int piece_count)
-{
-	char	**pieces;
-	int		foo;
-
-	if (!(pieces = (char **)malloc(sizeof(char *) * (piece_count + 1))))
-		return (NULL);
-	foo = 0;
-	while (*file_string && (*file_string != '\n'))
-	{
-		if (!(pieces[foo] = (char *)malloc(sizeof(char) * 20 + 1)))
-			return (NULL);
-		pieces[foo] = ft_strncpy(pieces[foo], file_string, 20);
-		pieces[foo][20] = '\0';
-		foo++;
-		file_string += 21;
-	}
-	return (pieces);
 }
 
 /*
@@ -71,21 +46,48 @@ static	long	find_absolute_placement(long piece_bits)
 ** and storing the letter of the piece. ALL that on only 2 bytes.
 */
 
-static	long	simplify_piece(char *piece, int name)
+static	long	*simplify_piece(char *file_string, int piece_count, long *simplified_pieces)
 {
-	long	piece_bits;
+	int foo;
 
-	piece_bits = 0;
-	while (*piece)
+	foo = 0;
+	ft_bzero(simplified_pieces, (piece_count + 1) * sizeof(long));
+	while (*file_string)
 	{
-		if (*piece++ == '#')
-			piece_bits += 1;
-		if (*piece && *piece != '\n')
-			piece_bits <<= 1;
+		if (*file_string == '\n' && (file_string[1] == '\n' || !file_string[1]))
+		{
+			file_string += 2;
+			simplified_pieces[foo] = find_absolute_placement(simplified_pieces[foo]);
+			simplified_pieces[foo] |= (foo << 16);
+			foo++;
+			continue ;
+		}
+		else if (*file_string == '\n')
+		{
+			file_string++;
+			continue ;
+		}
+		simplified_pieces[foo] <<= 1;
+		if (*file_string == '#')
+			simplified_pieces[foo] += 1;
+		file_string++;
 	}
-	piece_bits = find_absolute_placement(piece_bits);
-	piece_bits += (name << 16);
-	return (piece_bits);
+	return (simplified_pieces);
+}
+
+int			check_file_string(char *file_string)
+{
+DEB
+	if ((check_space_and_number(file_string)) == -1)
+		return (-1);
+DEB	
+	if (check_tetri(file_string))
+		return (-1);	
+DEB	
+	if (check_hash_links_format(file_string))
+		return (-1);	
+DEB	
+	return (0);
 }
 
 /*
@@ -102,23 +104,22 @@ static	long	simplify_piece(char *piece, int name)
 long			*parsing_of_the_file(int argc, char **argv)
 {
 	char	*file_string;
-	char	**pieces;
 	long	*simplified_pieces;
-	short	foo;
 	short	piece_count;
 
-	if (!(file_string = open_and_get_file(argc, argv))
-		|| check_file_string(file_string))
+	if (!(file_string = open_and_get_file(argc, argv)))
+	{
 		return (NULL);
+	} 
+	if (check_file_string(file_string))
+	{
+		ft_putendl("error");
+		return (NULL);
+	}
 	piece_count = piece_counter(file_string);
-	if (!(pieces = cut_down_pieces(file_string, piece_count)))
+	if (!(simplified_pieces = (long *)malloc(sizeof(long) * piece_count + 1)))
 		return (NULL);
-	simplified_pieces = (long *)malloc(sizeof(long) * piece_count + 1);
-	foo = -1;
-	while (++foo < piece_count)
-		simplified_pieces[foo] = simplify_piece(pieces[foo], foo);
-	simplified_pieces[foo] = 0;
+	simplify_piece(file_string, piece_count, simplified_pieces);	
 	free(file_string);
-	ft_deltab(&pieces);
 	return (simplified_pieces);
 }

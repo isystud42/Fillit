@@ -6,7 +6,7 @@
 /*   By: idsy <idsy@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/20 11:35:41 by isy               #+#    #+#             */
-/*   Updated: 2019/07/10 13:34:28 by idsy             ###   ########.fr       */
+/*   Updated: 2019/11/20 14:13:33 by idsy             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,5 +112,6 @@ size_t				ft_is_smaller(size_t a, size_t b);
 size_t				ft_is_bigger(size_t a, size_t b);
 int					ft_atoi_base(char *s, int base_size);
 void				ft_deb(char *file, int line);
+int					ft_strncount(char *str, char c, int n);
 
 #endif

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_deltab.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: isy <marvin@42.fr>                         +#+  +:+       +#+        */
+/*   By: idsy <idsy@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/11/27 04:29:49 by isy               #+#    #+#             */
-/*   Updated: 2016/11/28 13:02:36 by isy              ###   ########.fr       */
+/*   Updated: 2019/11/19 20:23:51 by idsy             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,17 +14,18 @@
 
 void	ft_deltab(char ***double_tab)
 {
-	int i;
+	char **save;
 
-	i = 0;
 	if (double_tab)
 	{
-		while (double_tab[0][i])
+		save = *double_tab;
+		while (*save)
 		{
-			free(double_tab[0][i]);
-			i++;
+
+			free(*save);
+			(save)++;
 		}
-		free(double_tab[0]);
+		free(*double_tab);
+		*double_tab = NULL;
 	}
-	return ;
 }
