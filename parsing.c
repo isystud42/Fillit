@@ -6,11 +6,15 @@
 /*   By: idsy <idsy@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/25 14:48:32 by idsy              #+#    #+#             */
-/*   Updated: 2019/11/21 12:47:17 by idsy             ###   ########.fr       */
+/*   Updated: 2019/11/21 15:54:25 by idsy             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fillit.h"
+
+/*
+** Uuuh.. Piece_counter... counts pieces??? Congrats sherlock.
+*/
 
 short			piece_counter(char *file_string)
 {
@@ -75,6 +79,11 @@ static	long	*simplify_piece(char *file_string, int piece_count,
 	}
 	return (simple_pieces);
 }
+
+/*
+** Calls all the functions charged of checking the entry. Find them in:
+** entry_checker.c
+*/
 
 int				check_file_string(char *file_string)
 {

@@ -6,25 +6,17 @@
 /*   By: idsy <idsy@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/07 18:04:21 by idsy              #+#    #+#             */
-/*   Updated: 2019/11/21 13:38:16 by idsy             ###   ########.fr       */
+/*   Updated: 2019/11/21 15:18:29 by idsy             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+/*
+** This file is containing the main checking functions of the entry file
+** Some of those function use subfunctions. These subft can be found in:
+**		entry_checkers_subfunctions.c
+*/
+
 #include "fillit.h"
-
-/*
-** Check_file_string check if the entry is conform to the format it's supposed
-** to have, checking those rules out:
-** Only one entry argv, Tetriminos are 4x4 sized and separated by '\n'
-** Each caracter is either # or . and there should be no more than 4 #
-** tetriminos forms should be coherent with no diagonals and contact between #
-** never more than 26 tetriminos
-*/
-
-/*
-** Check_line: A line should have 4 chars and end by \n
-** nothing more than # and . Everything else in an error
-*/
 
 /*
 ** Check_tetri: A tetrimino should have 4 lines with no more than 4 hashs
@@ -52,13 +44,11 @@ int			check_tetri(char *file_string)
 }
 
 /*
-** To check the format is the equivalent to say that you check the fact that
-** all the hashs they contain are linked between themselves.
-** which means that if there is an hash you should
-**	-check were is the first # you find.
-**	-execute a nippet that check and count the number of links
-**	  -if the number of links is lower than 1, it's wrong
-**	  -if the number of links is lower than 2 more than 3 times then it's wrong
+** check_hash_links_format is charged to check that all the # contained in a
+** tetrimino are connected to each other. It calls a snippet that you can find
+** in the subfunctions file.
+**	If every hash has a connection to another #
+**	and if no more than 3 # are connected to only 1 # then the tetri is valid
 */
 
 int			check_hash_links_format(char *file_string)
@@ -88,8 +78,9 @@ int			check_hash_links_format(char *file_string)
 }
 
 /*
-**	check_space_and_number checks if yhere is indeed less than 26 tetris
-**	and if there is indeed tetris, that they are well spaced between themselves
+** check_space_and_number checks if there is less than 26 tetris
+** and if there is multiple tetris, that they are well spaced between
+** themselves and separated by a \n
 */
 
 int			check_space_and_number(char *file_string)

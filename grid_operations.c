@@ -6,28 +6,17 @@
 /*   By: idsy <idsy@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/10/30 08:37:22 by idsy              #+#    #+#             */
-/*   Updated: 2019/11/18 13:31:47 by idsy             ###   ########.fr       */
+/*   Updated: 2019/11/21 15:42:51 by idsy             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fillit.h"
 
-long	*resize_grid(long *grid, short size)
-{
-	short	foo;
-	long	shifted_bits;
-
-	foo = 0;
-	shifted_bits = (0xFFFFFFFF >> size);
-	while (grid && foo < 32)
-	{
-		if (foo < size)
-			grid[foo++] = shifted_bits;
-		else
-			grid[foo++] = 0xFFFFFFFF;
-	}
-	return (grid);
-}
+/*
+** Grid is a array of long, Each long represents a line of the grid, and each
+** bit represents the disponibility of a unit. If the bit is on a 0, it's free
+** if it's on 1 it's not.
+*/
 
 long	*generate_grid(short size)
 {
@@ -49,6 +38,37 @@ long	*generate_grid(short size)
 	return (new_grid);
 }
 
+/*
+** When creating a grid, we initiate each of the 32 bits of a long to 1
+** 0xFFFFFFFF = 1111 1111 1111 1111		1111 1111 1111 1111
+** then we shift 'size' number of longs to the right of 'size number of bits
+** to create a clear space.
+*/
+
+long	*resize_grid(long *grid, short size)
+{
+	short	foo;
+	long	shifted_bits;
+
+	foo = 0;
+	shifted_bits = (0xFFFFFFFF >> size);
+	while (grid && foo < 32)
+	{
+		if (foo < size)
+			grid[foo++] = shifted_bits;
+		else
+			grid[foo++] = 0xFFFFFFFF;
+	}
+	return (grid);
+}
+
+/*
+** To find out the minimal grid size we just need to know how much tetris
+** we have, so we can know the number of # we have, and that number is
+** the minimal space needed to be able to fit every tetri inside.
+** keep in mind tha space = grid_size * grid_size
+*/
+
 int		find_out_minimal_grid_size(long *pieces)
 {
 	int		grid_size;
@@ -64,10 +84,3 @@ int		find_out_minimal_grid_size(long *pieces)
 		grid_size++;
 	return (grid_size);
 }
-
-/*
-** take position, divide it by the grid size to get the line, and take the modu
-** of it to get the position in theline. Then compared the 4 bits starting
-** to the position of this line to the first 4 bits of the teri and repeat of
-** each line of the tetriminos.
-*/

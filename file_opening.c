@@ -6,16 +6,16 @@
 /*   By: idsy <idsy@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/06 17:47:17 by idsy              #+#    #+#             */
-/*   Updated: 2019/11/19 17:00:57 by idsy             ###   ########.fr       */
+/*   Updated: 2019/11/21 15:20:53 by idsy             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fillit.h"
 
 /*
-** basically opening the file and getting a string out of it while being
-** secure and check for any possible error be it in a system call or in
-** entry values of the program
+** Open and get file open a file and puts whatever text it contains in a buffer
+** called file_string. This is the string that will be analised.
+** Keep in mind that You are limited to only 1 argument and 1 file
 */
 
 char	*open_and_get_file(int argc, char **argv)

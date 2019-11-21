@@ -6,16 +6,17 @@
 /*   By: idsy <idsy@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/25 15:02:21 by idsy              #+#    #+#             */
-/*   Updated: 2019/11/21 12:46:45 by idsy             ###   ########.fr       */
+/*   Updated: 2019/11/21 15:33:50 by idsy             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "fillit.h"
 
 /*
-**	chopper les pieces par parsing, le stockers en informations minimales
-**	si seulement 1 piece, commencer par une grille capable d'accepter
-**	tous les points, soit nb_pieces * 4 < gd_size * gd_size;
+** Le backtracking:
+** try to place a piece, if it works, great. Just do it for the next piece
+** If it doesn't work, Try with the next position. If it doesn't work with
+** any of them, Get a bigger grid... Brute force style.
 */
 
 int		fill_it_backtracking(long *grid, short gd_size,
@@ -47,6 +48,10 @@ int		fill_it_backtracking(long *grid, short gd_size,
 	}
 	return (0);
 }
+
+/*
+** The main calls all principal functions title of function should be clear.
+*/
 
 int		main(int argc, char **argv)
 {

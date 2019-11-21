@@ -6,7 +6,7 @@
 /*   By: idsy <idsy@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/04 12:22:48 by idsy              #+#    #+#             */
-/*   Updated: 2019/11/19 20:22:12 by idsy             ###   ########.fr       */
+/*   Updated: 2019/11/21 15:50:50 by idsy             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,10 +38,10 @@ static	char	**initialise_displayed_grid(short grid_size)
 }
 
 /*
-** What we want to do here is to identify the placement in the binary of the
-** piece, translate this position to a position in a line of the grid
-** then take the piece binary and  cut it line by line and pass it through a
-** function that will replace line by line
+** What we want to do here is to identify the placement bits in the binary of
+** the piece, translate this position to a position in a line of the grid
+** then take the bits responsible of the info of a piece and progressively
+** place them in the lines of the grid associated
 */
 
 void			place_pieces_in_displayed_grid(char **displayed_grid,
@@ -72,6 +72,11 @@ void			place_pieces_in_displayed_grid(char **displayed_grid,
 		pieces++;
 	}
 }
+
+/*
+** convert and display is the man function responsible to convert pieces
+** back from their simplified bits to a name, position.
+*/
 
 int				convert_and_display_grid(long *pieces, short grid_size)
 {
