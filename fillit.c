@@ -6,7 +6,7 @@
 /*   By: idsy <idsy@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/25 15:02:21 by idsy              #+#    #+#             */
-/*   Updated: 2019/11/19 19:59:33 by idsy             ###   ########.fr       */
+/*   Updated: 2019/11/21 12:46:45 by idsy             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int		main(int argc, char **argv)
 	if (!(grid = generate_grid(gd_size)))
 		return (-1);
 	while ((fill_it_backtracking(grid, gd_size, 0, pieces)))
-		grid = resize_grid(grid, ++gd_size);	
+		grid = resize_grid(grid, ++gd_size);
 	convert_and_display_grid(pieces, gd_size);
 	return (0);
 }

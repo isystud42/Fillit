@@ -6,7 +6,7 @@
 #    By: idsy <idsy@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2019/10/29 12:43:28 by idsy              #+#    #+#              #
-#    Updated: 2019/11/20 13:17:00 by idsy             ###   ########.fr        #
+#    Updated: 2019/11/21 13:29:49 by idsy             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -28,7 +28,7 @@ LIB_HEADERS = libft/libft.h
 
 ##SOURCE FILES INFOS
 SRCS_FILES = entry_checkers.c file_opening.c fillit.c grid_operations.c\
-grid_printing.c parsing.c pieces_bit_operators.c
+grid_printing.c parsing.c pieces_bit_operators.c entry_checkers_subfunctions.c
 SRCS_PATHS = ./
 
 ##OBJECT FILES INFOS

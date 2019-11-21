@@ -6,7 +6,7 @@
 /*   By: idsy <idsy@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/25 14:48:32 by idsy              #+#    #+#             */
-/*   Updated: 2019/11/20 14:24:36 by idsy             ###   ########.fr       */
+/*   Updated: 2019/11/21 12:47:17 by idsy             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,19 +46,20 @@ static	long	find_absolute_placement(long piece_bits)
 ** and storing the letter of the piece. ALL that on only 2 bytes.
 */
 
-static	long	*simplify_piece(char *file_string, int piece_count, long *simplified_pieces)
+static	long	*simplify_piece(char *file_string, int piece_count,
+								long *simple_pieces)
 {
 	int foo;
 
 	foo = 0;
-	ft_bzero(simplified_pieces, (piece_count + 1) * sizeof(long));
+	ft_bzero(simple_pieces, (piece_count + 1) * sizeof(long));
 	while (*file_string)
 	{
 		if (*file_string == '\n' && (file_string[1] == '\n' || !file_string[1]))
 		{
 			file_string += 2;
-			simplified_pieces[foo] = find_absolute_placement(simplified_pieces[foo]);
-			simplified_pieces[foo] |= (foo << 16);
+			simple_pieces[foo] = find_absolute_placement(simple_pieces[foo]);
+			simple_pieces[foo] |= (foo << 16);
 			foo++;
 			continue ;
 		}
@@ -67,26 +68,22 @@ static	long	*simplify_piece(char *file_string, int piece_count, long *simplified
 			file_string++;
 			continue ;
 		}
-		simplified_pieces[foo] <<= 1;
+		simple_pieces[foo] <<= 1;
 		if (*file_string == '#')
-			simplified_pieces[foo] += 1;
+			simple_pieces[foo] += 1;
 		file_string++;
 	}
-	return (simplified_pieces);
+	return (simple_pieces);
 }
 
-int			check_file_string(char *file_string)
+int				check_file_string(char *file_string)
 {
-DEB
 	if ((check_space_and_number(file_string)) == -1)
 		return (-1);
-DEB	
 	if (check_tetri(file_string))
-		return (-1);	
-DEB	
+		return (-1);
 	if (check_hash_links_format(file_string))
-		return (-1);	
-DEB	
+		return (-1);
 	return (0);
 }
 
@@ -104,22 +101,20 @@ DEB
 long			*parsing_of_the_file(int argc, char **argv)
 {
 	char	*file_string;
-	long	*simplified_pieces;
+	long	*simple_pieces;
 	short	piece_count;
 
 	if (!(file_string = open_and_get_file(argc, argv)))
-	{
 		return (NULL);
-	} 
 	if (check_file_string(file_string))
 	{
 		ft_putendl("error");
 		return (NULL);
 	}
 	piece_count = piece_counter(file_string);
-	if (!(simplified_pieces = (long *)malloc(sizeof(long) * piece_count + 1)))
+	if (!(simple_pieces = (long *)malloc(sizeof(long) * piece_count + 1)))
 		return (NULL);
-	simplify_piece(file_string, piece_count, simplified_pieces);	
+	simplify_piece(file_string, piece_count, simple_pieces);
 	free(file_string);
-	return (simplified_pieces);
+	return (simple_pieces);
 }

@@ -6,7 +6,7 @@
 /*   By: idsy <idsy@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/09/30 10:05:00 by idsy              #+#    #+#             */
-/*   Updated: 2019/11/20 14:22:32 by idsy             ###   ########.fr       */
+/*   Updated: 2019/11/21 13:39:17 by idsy             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,10 +14,6 @@
 # define FILLIT_H
 # include "libft/libft.h"
 # include <fcntl.h>
-
-//delete asap
-# include <stdio.h>
-
 
 # define BUFF_SIZE 4096
 
@@ -36,6 +32,8 @@ int		fill_it_backtracking(long *grid, short gd_size,
 							short position, long *pieces);
 int		check_space_and_number(char *file_string);
 int		check_hash_links_format(char *file_string);
+int		check_hash_links_snippet(char **file_string, int *one_link_count);
 int		check_tetri(char *file_string);
+int		check_line(char **file_string, int *hash_count);
 
 #endif
